@@ -1,0 +1,25 @@
+{
+  "Projects": [
+    {
+      "Name": "Apple II",
+      "Start": "06-01-1977",
+      "End": "05-01-1979",
+      "Resources": "Wozniak",
+      "Color": "red"
+    },
+    {
+      "Name": "iPod",
+      "Start": "10-23-2001",
+      "End": "05-10-2022",
+      "Resources": "Jobs",
+      "Color": "blue"
+    },
+    {
+      "Name": "Zune",
+      "Start": "11-14-2006",
+      "End": "06-01-2012",
+      "Resources": "Gates",
+      "Color": "green"
+    }
+  ]
+}
