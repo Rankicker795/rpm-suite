@@ -5,7 +5,7 @@ from datetime import date
 import pandas as pd
 from bokeh.models import ColumnDataSource, Range1d, Span
 from bokeh.models.tools import HoverTool
-from bokeh.plotting import figure, savek
+from bokeh.plotting import figure, save
 
 
 def db_json_parse(json_file: str) -> dict:
