@@ -1,2 +1,2 @@
 # rpm-suite
-Rudiemtary Project Management Tool
+Rudimentary Project Management Tool

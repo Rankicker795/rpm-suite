@@ -1,6 +1,7 @@
+import argparse
 import json
-import sys
 from datetime import date
+from pathlib import Path
 
 import pandas as pd
 from bokeh.models import ColumnDataSource, Range1d, Span
@@ -26,7 +27,7 @@ def dict2df(db_dict: dict) -> pd.DataFrame:
     :return: Dataframe version of db
     """
     df = pd.DataFrame(columns=["Name", "Start-Date", "End-Date",
-                               "Resources", "Color"])
+                               "Resources", "Customer", "Color"])
     tasks = db_dict.values()
     for t in tasks:
         df = df.append(t, ignore_index=True, sort=False)
@@ -65,7 +66,8 @@ def make_gantt(df: pd.DataFrame, gantt_html: str) -> None:
 
     hover = HoverTool(tooltips="Task: @Name<br>\
     Start: @Start<br>\
-    End: @End")
+    End: @End<br>\
+    Customer: @Customer")
     gantt.add_tools(hover)
 
     CDS = ColumnDataSource(df)
@@ -79,14 +81,45 @@ def make_gantt(df: pd.DataFrame, gantt_html: str) -> None:
     save(gantt, gantt_html)
 
 
-def main(json_file: str, gantt_html: str) -> None:
-    db_dict = db_json_parse(json_file)
+def gantt_cli() -> argparse.Namespace:
+    """
+    Command Line Interface to gather command line args into a single Namespace
+    :return Namespace of all the command line args
+    """
+    # Create the parser with a helpful description of its purpose and a
+    # formatting class that prints the default values in the command argument
+    # descriptions.
+    gantt_parser = argparse.ArgumentParser(
+        description='Parses arguments for the Gantt Chart generator.',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    # Add the positional and optional arguments to the parser. Optionals are
+    # indicated by the flag names ('--') and have been assigned default values.
+    # Additional arguments can be added if need be.
+    gantt_parser.add_argument(
+        'json',
+        help='JSON containing the information to be plotted'
+    )
+    gantt_parser.add_argument(
+        '-d', '--dest_dir',
+        default=Path.cwd(),
+        type=Path,
+        help='Destination directory path to which the files '
+             'will be created.'
+    )
+    # Returns a namespace of parsed command arguments. Since the age threshold
+    # has a default of None, it needs to be converted to an integer outside the
+    # parser.
+    return gantt_parser.parse_args()
+
+
+def main() -> None:
+    gantt_args = gantt_cli()
+    db_dict = db_json_parse(gantt_args.json)
     db_dataframe = dict2df(db_dict)
     prepared_dataframe = prepare_df(db_dataframe)
-    make_gantt(prepared_dataframe, gantt_html)
+    make_gantt(prepared_dataframe, gantt_args.dest_dir)
 
 
 if __name__ == "__main__":
-    database_json = sys.argv[1]
-    gantt_name = "test.html"
-    main(database_json, gantt_name)
+    main()
