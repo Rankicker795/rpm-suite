@@ -101,11 +101,10 @@ def gantt_cli() -> argparse.Namespace:
         help='JSON containing the information to be plotted'
     )
     gantt_parser.add_argument(
-        '-d', '--dest_dir',
-        default=Path.cwd(),
+        '-d', '--dest_html',
+        default=Path.cwd() / "index.html",
         type=Path,
-        help='Destination directory path to which the files '
-             'will be created.'
+        help='Destination HTML file to create'
     )
     # Returns a namespace of parsed command arguments. Since the age threshold
     # has a default of None, it needs to be converted to an integer outside the
@@ -118,7 +117,7 @@ def main() -> None:
     db_dict = db_json_parse(gantt_args.json)
     db_dataframe = dict2df(db_dict)
     prepared_dataframe = prepare_df(db_dataframe)
-    make_gantt(prepared_dataframe, gantt_args.dest_dir)
+    make_gantt(prepared_dataframe, gantt_args.dest_html)
 
 
 if __name__ == "__main__":
