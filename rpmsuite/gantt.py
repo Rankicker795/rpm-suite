@@ -49,20 +49,24 @@ def prepare_df(db_df: pd.DataFrame) -> pd.DataFrame:
     return db_df
 
 
-def make_gantt(df: pd.DataFrame, gantt_html: str) -> None:
+def make_gantt(df: pd.DataFrame, gantt_html: str, html_height: int,
+               html_width: int) -> \
+        None:
     """
     Make the Gantt Bokeh HTML
     :param df: Database Dataframe
     :param gantt_html: Name of the save Gantt HTML
+    :param html_height: HTML Height
+    :param html_width: HTML Width
     :return: None
     """
     current_dt = date.today()
     TOOLS = "save,pan,box_zoom,reset,wheel_zoom,tap"
 
-    gantt = figure(title='Project Schedule', x_axis_type='datetime', width=800,
-               height=400, y_range=df.Name,
-               x_range=Range1d(df.Start_DT.min(), df.End_DT.max()),
-               tools=TOOLS)
+    gantt = figure(title='Project Schedule', x_axis_type='datetime',
+                   width=html_width, height=html_height, y_range=df.Name,
+                   x_range=Range1d(df.Start_DT.min(), df.End_DT.max()),
+                   tools=TOOLS)
 
     hover = HoverTool(tooltips="Task: @Name<br>\
     Start: @Start<br>\
@@ -106,6 +110,18 @@ def gantt_cli() -> argparse.Namespace:
         type=Path,
         help='Destination HTML file to create'
     )
+    gantt_parser.add_argument(
+        '-hh', '--height',
+        default=400,
+        type=int,
+        help='Destination HTML Height'
+    )
+    gantt_parser.add_argument(
+        '-wh', '--width',
+        default=800,
+        type=int,
+        help='Destination HTML Width'
+    )
     # Returns a namespace of parsed command arguments. Since the age threshold
     # has a default of None, it needs to be converted to an integer outside the
     # parser.
@@ -117,7 +133,8 @@ def main() -> None:
     db_dict = db_json_parse(gantt_args.json)
     db_dataframe = dict2df(db_dict)
     prepared_dataframe = prepare_df(db_dataframe)
-    make_gantt(prepared_dataframe, gantt_args.dest_html)
+    make_gantt(prepared_dataframe, gantt_args.dest_html, gantt_args.height,
+               gantt_args.width)
 
 
 if __name__ == "__main__":
