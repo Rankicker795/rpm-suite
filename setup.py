@@ -1,4 +1,4 @@
-"""Configuration to install sportdownloader package"""
+"""Configuration to install rpm-suite  package"""
 
 from setuptools import setup
 
@@ -18,10 +18,10 @@ setup(
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-    ],
+        ],
     entry_points={
         'console_scripts': [
             'rpmgantt=rpmsuite.gantt:main'
-        ]
-    },
-)
+            ]
+        },
+    )
